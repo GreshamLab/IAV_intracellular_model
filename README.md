@@ -44,5 +44,5 @@ This framework enables the simulation of viral diversity, replication kinetics, 
 within infected cells under varying initial conditions and parameter settings.
 
 For example applications, see:
-- `simulate_multiple.m` → used to generate data for Figure 2B and Figure S1 in Segredo-Otero & Gresham (2025)
+- `Central_IAVGillespie_single.m` → used to generate data for Figure 2B and Figure S1 in Segredo-Otero & Gresham (2025)
 
