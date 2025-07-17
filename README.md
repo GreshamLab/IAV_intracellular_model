@@ -1,5 +1,6 @@
 # IAV_intracellular_model
 Matlab scripts for the stochastic simulation of intracellular replication and population level modeling.
+
 ================================================================================================================
 IAV Stochastic Simulation Pipeline – Overview
 ================================================================================================================
@@ -46,4 +47,3 @@ within infected cells under varying initial conditions and parameter settings.
 For example applications, see:
 - `simulate_multiple.m` → used to generate data for Figure 2B and Figure S1 in Segredo-Otero & Gresham (2025)
 
-================================================================================================================
