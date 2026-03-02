@@ -48,5 +48,5 @@ For example applications, see:
 
 ------------------------------------------------------------------------------------------------
 We've uploaded to the OSF proect https://osf.io/f9e6v/ the simulated data that generates the script Central_IAVGillespie_multiple.m, 
-Rangig MOIs from 1 to 20, and 1000 replicates per MOI (simulating 1000 cellulas infections). These simulated data are used by the population level model.
+Rangig MOIs from 1 to 10, and 1000 replicates per MOI (simulating 1000 cellulas infections). These simulated data are used by the population level model.
 
