@@ -61,7 +61,15 @@ function A1 = Propensities(Si1, IndS, MPars, Vir_Prod, Params, PM_cyt, Prots, NP
     % PRNA  = k_bind_pol / (k_bind_pol + k_deg_nakedRNA)
     % PRNAP = k_bind_NP / (k_bind_NP + k_deg_RNA-pol)
     % The overall RNP formation propensity is the original one multiplied by PRNA * PRNAP
+     
+    a0 = 0.22; KrTr = 1e4;
 
+    A1(Neg_syn) = a0.*A1(Neg_syn) + (1-a0).*A1(Neg_syn)./(1 + (KrTr./(Si1(Pol)+1e-10)).^2.7);
+    A1(Pos_syn) = a0.*A1(Pos_syn) + (1-a0).*A1(Pos_syn)./(1 + (KrTr./(Si1(Pol)+1e-10)).^2.7);
+    
+    % These approximations represent the allosteric regulation of the synthesis 
+    % of the cRNA and vRNA by free polymerase
+    
     % -------------------------------
     % QSSA-based approximation for nuclear export of RNPs
     % -------------------------------
