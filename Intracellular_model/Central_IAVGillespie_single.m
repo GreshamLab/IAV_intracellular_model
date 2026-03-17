@@ -78,8 +78,16 @@ Reg = xlsread(Param_mat, 5);
 % Multiplicity of infection (MOI): number of genetically distinct virions infecting the cell
 MOI = 10;
 
+if ~(isnumeric(MOI) && isscalar(MOI) && MOI > 0 && floor(MOI) == MOI)
+    error('MOI must be a natural number (positive integer)');
+end
+
 % Initial number of virions per genetic variant infecting the cell
 IniV = 1;
+
+if ~(isnumeric(IniV) && isscalar(IniV) && IniV > 0 && floor(IniV) == IniV)
+    error('IniV must be a natural number (positive integer)');
+end
 
 % ======================
 % SIMULATION SETTINGS
