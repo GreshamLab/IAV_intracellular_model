@@ -35,8 +35,8 @@ for m = 1:M
     % Load genomes and fitness data for each MOI
     Genomes_name = strcat(current,'/MOI_',num2str(MOIs(m)),'_Genomes',path,'.csv');
     Fit_name = strcat(current,'/MOI_',num2str(MOIs(m)),'_Fit',path,'.csv');
-    Genomes = csvread(Genomes_name);
-    Fit = csvread(Fit_name);
+    Genomes = readmatrix(Genomes_name);
+    Fit = readmatrix(Fit_name);
     
     % Clean and store
     Genomes_store(:,1:MOIs(m),MOIs(m)) = Genomes;
