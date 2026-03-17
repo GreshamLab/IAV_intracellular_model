@@ -5,7 +5,7 @@
 % 1. Null model: all virions are equally fit and all infections are successful.
 % 2. IAV model: uses simulated genome and fitness data from prior 
 % single-cell runs (in this case, we're using the ones form 
-% Result_03-23-2025_08-14-13, but these can be generated with the script 
+% Result_11-25-2025_08-23-25, but these can be generated with the script 
 % Central_IAVGillespie_multiple). Each simulation tracks 10^4 neutral 
 % variants (barcodes) and computes Ne by comparing frequencies before and after infection.
 % -------------------------------------------------------------------------
@@ -21,7 +21,7 @@ close all
 clc
 
 %% LOAD SIMULATION DATA ---------------------------------------------------
-current = strcat(pwd,'/Result_03-23-2025_08-14-13');
+current = strcat(pwd,'/Result_11-25-2025_08-23-25');
 path = current(end-19:end);
 M = 20;                          % Number of different MOI conditions
 MOIs = 1:M;
