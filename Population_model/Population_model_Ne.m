@@ -35,10 +35,10 @@ for m = 1:M
     Genomes_name = strcat(current,'/MOI_',num2str(MOIs(m)),'_Genomes',path,'.csv');
     Fit_name = strcat(current,'/MOI_',num2str(MOIs(m)),'_Fit',path,'.csv');
     
-    Genomes = csvread(Genomes_name);
+    Genomes = readmatrix(Genomes_name);
     Genomes_store(:,1:MOIs(m),MOIs(m)) = Genomes;
 
-    Fit = csvread(Fit_name);
+    Fit = readmatrix(Fit_name);
     Fit = Fit(1,:);
     Fit(isnan(Fit)) = 0; Fit(Fit == Inf) = 0;
     Fit_store(:,MOIs(m)) = Fit;
