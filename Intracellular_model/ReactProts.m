@@ -27,6 +27,7 @@ function SiM = ReactProts(Rs,A1,SiM1,SiM,dt,Prots_reac,Params_reac,Si)
     while sum(SiM(:) < 0) > 0
         count = count + 1;
         if count > 100
+        disp('Warning, negative value of protein amount')
             break
         end
 
