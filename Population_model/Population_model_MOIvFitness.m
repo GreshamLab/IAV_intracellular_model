@@ -3,7 +3,7 @@
 % This script performs a grid simulation sweeping across a range of fitness 
 % advantages and multiplicities of infection (MOI). It uses single-cell infection 
 % results from IAV simulations to model population-level dynamics (in this case, we're using
-% the ones form Result_03-23-2025_08-14-13, but these can be generated with 
+% the ones form Result_11-25-2025_08-23-25, but these can be generated with 
 % the script Central_IAVGillespie_multiple).
 % For each parameter combination, the simulation introduces a single high-fitness 
 % variant and tracks its final frequency after 14 days (~28 generations). 
@@ -22,7 +22,7 @@ clc
 
 %% Load precomputed single-cell infection results ---------------------------
 
-current = strcat(pwd,'/Result_03-23-2025_08-14-13');
+current = strcat(pwd,'/Result_11-25-2025_08-23-25');
 path = current(end-19:end);
 M = 20;                  % Maximum MOI value in dataset
 MOIs = 1:M;
