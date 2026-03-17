@@ -42,8 +42,8 @@ for m = 1:M
     Fit_name     = strcat(current, '/MOI_', num2str(MOIs(m)), '_Fit',     path, '.csv');
 
     % Read CSVs
-    Genomes = csvread(Genomes_name);
-    Fit     = csvread(Fit_name);
+    Genomes = readmatrix(Genomes_name);
+    Fit     = readmatrix(Fit_name);
 
     % Store
     Genomes_store(:, 1:MOIs(m), MOIs(m)) = Genomes;
