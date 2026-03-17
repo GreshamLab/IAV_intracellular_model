@@ -2,7 +2,7 @@
 % -------------------------------------------------------------------------
 % This script performs population-level simulations of Influenza A Virus (IAV)
 % using pre-generated single-cell infection results (in this case, we're using
-% the ones form Result_03-23-2025_08-14-13, but these can be generated with 
+% the ones form Result_11-25-2025_08-23-25, but these can be generated with 
 % the script Central_IAVGillespie_multiple). Unlike previous scripts,
 % this one introduces a beneficial mutant variant with increased fitness. The
 % simulation tracks its frequency over multiple viral generations under varying
@@ -19,7 +19,7 @@ close all
 clc
 
 % Load simulation results
-current = strcat(pwd,'/Result_03-23-2025_08-14-13');
+current = strcat(pwd,'/Result_11-25-2025_08-23-25');
 path = current(end-19:end);
 M = 20;
 MOIs = 1:M;
