@@ -2,7 +2,7 @@
 % -------------------------------------------------------------------------
 % This script uses pre‑generated single‑cell infection results to build a
 % population‑scale simulation (in this case, we're using
-% the ones form Result_03-23-2025_08-14-13, but these can be generated with 
+% the ones form Result_11-25-2025_08-23-25, but these can be generated with 
 % the script Central_IAVGillespie_multiple). It compares a neutral "null model" virus (all
 % infections succeed, identical output per virion infecting cells) with 
 % Influenza A Virus (IAV) simulation results. The simulation tracks 2048 neutral
@@ -23,7 +23,7 @@ close all
 clc;
 
 %% LOAD PRE‑COMPUTED SINGLE‑CELL RESULTS ----------------------------------
-current = strcat(pwd, '/Result_03-23-2025_08-14-13');  % Folder with CSVs
+current = strcat(pwd, '/Result_11-25-2025_08-23-25');  % Folder with CSVs
 path    = current(end-19:end);   % Timestamp substring used in filenames
 
 M      = 20;      % Max MOI simulated
