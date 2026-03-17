@@ -90,10 +90,17 @@ for MOI = 1:20
     for rep = 1:Rep
 
         % Initialize state vectors
-        Si   = zeros(1, NumS);                  % Global state
-        SiM  = zeros(MOI, NumS);                % Per-genotype state
-        SiMC = zeros(MOI, NumS * maxCycle);     % With replication cycles
-        ti   = 0;                               % Initial time
+        
+        % Initial molecular state vector (1 x NumS), initialized to zero
+        Si = zeros(1,NumS);
+        
+        % Initial states for each of the MOI virions (MOI x NumS)
+        SiM = zeros(MOI,NumS);
+        
+        % Extended matrix to store species states across multiple cycles (MOI x NumS * maxCycle)
+        SiMC = zeros(MOI,NumS*maxCycle);
+
+        ti   = 0; % Initial time
 
         % Initialize virion genome composition (complete segments)
         V0 = ones(MOI, NumG);
