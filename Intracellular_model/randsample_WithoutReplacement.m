@@ -2,7 +2,7 @@
 % It draws `k` unique elements from the vector `V`, using the corresponding probabilities in `P`.
 % The sampled elements are returned in sorted order.
 
-function C = randsample_WithReplacement(V, k, P)
+function C = randsample_WithoutReplacement(V, k, P)
 
     % Sanitize input probabilities: remove negatives and normalize
     P(P < 0) = 0;
