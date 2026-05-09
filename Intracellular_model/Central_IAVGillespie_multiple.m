@@ -47,6 +47,9 @@ Params = xlsread(Param_mat, 4);      % Parameters
 Reg    = xlsread(Param_mat, 5);      % QSSA-regulated parameters
 NPs    = xlsread(Param_mat, 6)';     % Virion structure
 
+% IAV mutation rate per nucleotide
+a = 5e-5 / 6;
+
 %% TIME STEP SETTINGS FOR EACH MOI ----------------------------------------
 dtM = zeros(1,20);           % Preallocate vector of dt values
 
@@ -82,7 +85,7 @@ for MOI = 1:20
     Virs_G = zeros(NumG, maxVir_store, Rep);
     Virs_C = zeros(NumG, maxVir_store, Rep);
     Virs_time = zeros(maxVir_store, Rep);
-    Muts_per_virion = zeros(1, Rep);     % Placeholder for future use
+    Muts_per_virion = zeros(1, Rep);     % Store average mutations per virion
 
     % Show current MOI
     disp(['Running MOI = ', num2str(MOI)]);
@@ -146,6 +149,11 @@ for MOI = 1:20
         Virs_G(:,:,rep) = Frac_G;
         Virs_C(:,:,rep) = Frac_C;
         Virs_time(:,rep) = Virions_time;
+
+        % Save number of mutations per virion
+        Total_virions = min([SiT(NumS, step), maxVir_store]);
+        Muts_per_virion(1,rep) = computeMutationsPerVirion(Total_virions,SiM,PM_cyt,Frac_G,Frac_C,NumG,MOI,a);
+        
     end
 
     %% EXPORT TO CSV ------------------------------------------------------
@@ -167,6 +175,7 @@ for MOI = 1:20
     writematrix(Virs_time,  fullfile(Path, [base, 'Virs_time_', date, '.csv']));
     writematrix(Tit,        fullfile(Path, [base, 'Tit_', date, '.csv']));
     writematrix(Times,      fullfile(Path, [base, 'Times_', date, '.csv']));
+    writematrix(Muts_per_virion,      fullfile(Path, [base, ';Muts_per_virion_', date, '.csv']));
     
 end
 
