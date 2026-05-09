@@ -1,0 +1,157 @@
+function Muts_per_virion = computeMutationsPerVirion(Total_virions,SiM,PM_cyt,Frac_G,Frac_C,NumG,MOI,a)
+
+% COMPUTEMUTATIONSPERVIRION Calculates the number of mutations per virion
+%   This function processes viral mutations during replication and returns
+%   the mean number of mutations per virion for a given replication event.
+%
+%   INPUTS:
+%       Total_virions   - Number of virions in this infection
+%       SiM             - State matrix of initial virions
+%       PM_cyt          - Cytoplasm genomic RNP index
+%       Frac_G          - Initial virions genome index
+%       Frac_C          - Replication cycles genome index
+%       NumG            - Number of genome segments
+%       MOI             - Multiplicity of infection
+%       a               - IAV mutation rate per nucleotide
+%
+%   OUTPUT:
+%       Muts_per_virion - Mean number of mutations per virion
+
+% Define mutation parameters
+Length_muts = 20;  % Length of mutation sequence
+
+% Initialize matrices to track infecting virions
+Infecting_virions_numM = zeros(Total_virions, NumG);      % Number of mutations per virion per segment
+Infecting_virions_locus = zeros(Total_virions, Length_muts);  % Locus positions of mutations
+Infecting_virions_muts = zeros(Total_virions, Length_muts);   % Mutation types
+Muts_in_cell = zeros(0, 7);  % Track mutations within cells [locus, mut, segment, Frac_C, Frac_G, random_index, Num_mols_C]
+
+
+% Influenza A virus segment lengths (IAV segments)
+IAV_segments = floor([2320, 2320, 2211, 1757, 1540, 1392, 1005, 868]);
+Segments_cum = cumsum(IAV_segments);  % Cumulative sum of segment lengths
+
+% Define segment coordinates (start and end positions for each segment)
+Seg_coor = zeros(2, NumG);
+Seg_coor(1, 1) = 1;
+Seg_coor(2, 1) = Segments_cum(1);
+for I = 2:NumG
+    Seg_coor(1, I) = Segments_cum(I - 1) + 1;
+    Seg_coor(2, I) = Segments_cum(I);
+end
+
+% Initialize G1 matrix with genome fractions
+G1 = zeros(NumG, MOI);
+G1(:, :) = SiM(:, PM_cyt)';
+
+% Process mutations for each virion
+for v = 1:Total_virions
+    
+    % Get genome fraction for current virion
+    V0 = Frac_G(:, v)';
+    fS = find(V0);  % Find segments that have genomes
+    
+    % Process pre-existing mutations from previous cell
+    for j = 1:length(fS)
+        
+        % Find matching mutations in cell that match current segment and genome fraction
+        Indf = find(Muts_in_cell(:, 5) == V0(fS(j)) & ...
+                    Muts_in_cell(:, 3) == fS(j) & ...
+                    Muts_in_cell(:, 4) <= Frac_G(fS(j), v))';
+        
+        if length(Indf) == 0
+            continue;  % Skip if no matching mutations found
+        end
+        
+        % Find indices of matching genome fractions
+        fM = find(Frac_G(fS(j), :)' == Frac_G(fS(j), v)');
+        
+        % Calculate histogram and fractions of cell fractions
+        h = histcounts(Frac_C(fS(j), fM)', [1:30, 30]);
+        fracC = h / numel(Frac_C(fS(j), fM)');
+        
+        % Calculate number of molecules for each element
+        Num_mols_C = round(fracC(Frac_C(fS(j), v)') * ...
+                          (G1(fS(j), Frac_G(fS(j), v)') + length(fM)));
+        
+        % Process each matching mutation
+        for J = 1:length(Indf)
+            
+            % Random selection based on molecule count
+            if randi(Num_mols_C, 1, 1) == Muts_in_cell(Indf(J), 6)
+                iniC = nansum(Infecting_virions_numM(v, :)) + 1;
+                Infecting_virions_locus(v, iniC) = Muts_in_cell(Indf(J), 1);
+                Infecting_virions_muts(v, iniC) = Muts_in_cell(Indf(J), 2);
+                Infecting_virions_numM(v, fS(j)) = Infecting_virions_numM(v, fS(j)) + 1;
+            end
+            
+        end
+        
+    end
+    
+    % Generate new mutations during genome replication
+    % Poisson-distributed number of mutations per segment
+    Muts = poissrnd(a .* IAV_segments .* Frac_C(:, v)' .* 2);
+    fMuts = find(Muts);  % Find segments with new mutations
+    numM = length(fMuts);
+    
+    % Process new mutations for each segment
+    for s = 1:numM
+        
+        seg = fMuts(s);  % Current segment
+        
+        % Generate random locus positions and mutation types
+        locus = randi([Seg_coor(1, seg), Seg_coor(2, seg)], 1, Muts(seg));
+        mut = randi([2, 4], 1, Muts(seg));
+        
+        % Check if these loci already have mutations
+        Old_locus = zeros(1, length(locus));
+        iniC = nansum(Infecting_virions_numM(v, :)) + 1;
+        
+        for m = 1:length(locus)
+            old_m = find(Infecting_virions_locus(v, 1:iniC - 1) == locus(m));
+            if length(old_m) > 0
+                Infecting_virions_muts(v, old_m) = mut(m);  % Update existing mutation
+                Old_locus(m) = 1;
+            end
+        end
+        
+        % Remove old loci and mutations that were overwritten
+        locus(find(Old_locus)) = [];
+        mut(find(Old_locus)) = [];
+        Muts(seg) = Muts(seg) - length(find(Old_locus));
+        
+        % Add new unique mutations to infecting virions
+        finC = nansum(Infecting_virions_numM(v, :)) + Muts(seg);
+        Infecting_virions_locus(v, iniC:finC) = locus;
+        Infecting_virions_muts(v, iniC:finC) = mut;
+        Infecting_virions_numM(v, seg) = Infecting_virions_numM(1, seg) + Muts(seg);
+        
+        % Calculate molecule counts for tracking
+        fM = find(Frac_G(seg, :)' == Frac_G(seg, v)');
+        h = histcounts(Frac_C(seg, fM)', [1:30, 30]);
+        fracC = h / numel(Frac_C(seg, fM)');
+        
+        Num_mols_C = round(fracC(Frac_C(seg, v)') * ...
+                          (G1(seg, Frac_G(seg, v)') + length(fM)));
+        
+        % Store new mutations in the cell mutation tracker
+        iniM = size(Muts_in_cell, 1) + 1;
+        endM = iniM + Muts(seg) - 1;
+        
+        Muts_in_cell(iniM:endM, 1) = locus;  % Locus position
+        Muts_in_cell(iniM:endM, 2) = mut;    % Mutation type
+        Muts_in_cell(iniM:endM, 3) = seg;    % Segment number
+        Muts_in_cell(iniM:endM, 4) = Frac_C(seg, v)';  % Cell fraction
+        Muts_in_cell(iniM:endM, 5) = Frac_G(seg, v)';  % Genome fraction
+        Muts_in_cell(iniM:endM, 6) = randi(Num_mols_C, Muts(seg), 1);  % Random molecule index
+        Muts_in_cell(iniM:endM, 7) = Num_mols_C;  % Number of molecules
+        
+    end
+    
+end
+
+% Calculate mean number of mutations per virion for this replication event
+Muts_per_virion = mean(sum(Infecting_virions_numM, 2));
+
+end
