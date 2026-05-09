@@ -175,7 +175,7 @@ for MOI = 1:20
     writematrix(Virs_time,  fullfile(Path, [base, 'Virs_time_', date, '.csv']));
     writematrix(Tit,        fullfile(Path, [base, 'Tit_', date, '.csv']));
     writematrix(Times,      fullfile(Path, [base, 'Times_', date, '.csv']));
-    writematrix(Muts_per_virion,      fullfile(Path, [base, ';Muts_per_virion_', date, '.csv']));
+    writematrix(Muts_per_virion,      fullfile(Path, [base, ';Muts_', date, '.csv']));
     
 end
 
